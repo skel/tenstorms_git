@@ -156,7 +156,7 @@ class boss_halion : public CreatureScript
                 HalionDamage = 0;
                 HalionAura = 0;
                 RemoveAllGO();
-				summons.DespawnEntry(40142);
+                summons.DespawnEntry(40142);
             }
 
             void RemoveAllGO()
@@ -576,7 +576,7 @@ class spell_halion_portal : public SpellScriptLoader
         class spell_halion_portal_SpellScript : public SpellScript
         {
              PrepareSpellScript(spell_halion_portal_SpellScript)
-	    void HandleScriptEffect(SpellEffIndex /*effIndex*/)
+	        void HandleScriptEffect(SpellEffIndex /*effIndex*/)
              
             {
                 PreventHitDefaultEffect(EFFECT_0);
