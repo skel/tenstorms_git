@@ -979,18 +979,6 @@ void Aura::HandleAuraSpecificMods(AuraApplication const * aurApp, Unit * caster,
                                 caster->CastSpell(caster, spellId, true);
                         }
                         break;
-                    case 44544: // Fingers of Frost
-                    {
-                        // See if we already have the indicator aura. If not, create one.
-                        if (Aura *aur = target->GetAura(74396))
-                        {
-                            // Aura already there. Refresh duration and set original charges
-                            aur->SetCharges(2);
-                            aur->RefreshDuration();
-                        }
-                        else
-                            target->AddAura(74396, target);
-                    }
                     default:
                         break;
                 }
@@ -1160,9 +1148,11 @@ void Aura::HandleAuraSpecificMods(AuraApplication const * aurApp, Unit * caster,
                         target->CastSpell(target, 32612, true, NULL, GetEffect(1));
                         break;
                     case 74396: // Fingers of Frost
-                        // Remove the IGNORE_AURASTATE aura
-                        target->RemoveAurasDueToSpell(44544);
+                    {
+                        if (removeMode == AURA_REMOVE_BY_CANCEL)
+                            target->RemoveAurasDueToSpell(44544);
                         break;
+                    }
                     case 44401: //Missile Barrage
                     case 48108: //Hot Streak
                     case 57761: //Fireball!
@@ -1591,8 +1581,43 @@ void Aura::HandleAuraSpecificMods(AuraApplication const * aurApp, Unit * caster,
                     else
                         caster->RemoveAurasDueToSpell(200000);
                 }
+            
             }
             break;
+             case SPELLFAMILY_MAGE:
+            switch(GetSpellProto()->Id)
+            {
+                case 44544: // Fingers of Frost
+                {
+                    int32 key = (aurApp->GetBase()->GetApplyTime() & 0x7FFFFFFF);
+
+                    // See if we already have the indicator aura. If not, create one.
+                    if (Aura * aura = target->GetAura(74396))
+                    {
+                        if (!apply)
+                        {
+                            if (aura->GetEffect(EFFECT_0)->GetAmount() == key)
+                                aura->Remove(removeMode);
+                            break;
+                        }
+
+                        // Aura already there. Refresh duration and set original charges
+                        aura->SetCharges(aurApp->GetBase()->GetEffect(EFFECT_0)->GetAmount());
+                        aura->GetEffect(EFFECT_0)->SetAmount(key);
+                        aura->RefreshDuration();
+                        break;
+                    }
+                    else if (apply)
+                        if (Aura * aura = target->AddAura(74396, target))
+                        {
+                            aura->GetEffect(EFFECT_0)->SetAmount(key);
+                            aura->SetCharges(aurApp->GetBase()->GetEffect(EFFECT_0)->GetAmount());
+                        }
+                    break;
+                }
+                default:
+                    break;
+            }
     }
 }
 
@@ -1648,6 +1673,9 @@ bool Aura::CheckAreaTarget(Unit *target)
                     return false;
                     break;
             }
+            break;
+ 
+        default:
             break;
     }
     return true;

@@ -7780,6 +7780,19 @@ bool Unit::HandleAuraProc(Unit * pVictim, uint32 damage, Aura * triggeredByAura,
                     this->CastCustomSpell(this, 67545, &bp0, NULL, NULL, true, NULL, triggeredByAura->GetEffect(0), this->GetGUID());
                     return true;
                 }
+                case 44544: // Fingers of Frost
+                {
+                    *handled = true;
+
+                    int32 key = (triggeredByAura->GetApplyTime() & 0x7FFFFFFF);
+
+                    if (Aura * aura = GetAura(74396))
+                        if (aura->GetEffect(EFFECT_0)->GetAmount() == key)
+                            if (aura->DropCharge())
+                                triggeredByAura->Remove();
+
+                    return false;
+                }
             }
             break;
         }
@@ -8771,14 +8784,7 @@ bool Unit::HandleOverrideClassScriptAuraProc(Unit *pVictim, uint32 /*damage*/, A
             }
             break;
         }
-        case 45176: // Master Poisoner Proc Trigger (SERVERSIDE)
-        {
-            if (!procSpell)
-                return false;
-
-           int32 basepoints0 = procSpell->Id;
-            break;
-        }
+       
         default:
             break;
     }
