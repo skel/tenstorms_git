@@ -136,11 +136,11 @@ class achievement_bg_ic_glaive_grave : public AchievementCriteriaScript
     public:
         achievement_bg_ic_glaive_grave() : AchievementCriteriaScript("achievement_bg_ic_glaive_grave") { }
 
-        bool OnCheck(Player* source, Unit* target)
+        bool OnCheck(Player* source, Unit* /*target*/)
         {
             if (Creature* vehicle = source->GetVehicleCreatureBase())
             {
-                if (vehicle->GetEntry() == 35273 || vehicle->GetEntry() == 34802)
+                if (vehicle->GetEntry() == NPC_GLAIVE_THROWER_H ||  vehicle->GetEntry() == NPC_GLAIVE_THROWER_A)
                     return true;
             }
 
@@ -153,7 +153,7 @@ class achievement_bg_ic_mowed_down : public AchievementCriteriaScript
     public:
         achievement_bg_ic_mowed_down() : AchievementCriteriaScript("achievement_bg_ic_mowed_down") { }
 
-        bool OnCheck(Player* source, Unit* target)
+        bool OnCheck(Player* source, Unit* /*target*/)
         {
             if (Creature* vehicle = source->GetVehicleCreatureBase())
             {

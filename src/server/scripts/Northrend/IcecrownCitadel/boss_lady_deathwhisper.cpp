@@ -90,9 +90,24 @@ class boss_lady_deathwhisper : public CreatureScript
 
             void Reset()
             {
+<<<<<<< HEAD
                 m_uiPhase = 1;
                 m_uiIntroPhase = 1;
                 m_uiStage = 1;
+=======
+                _Reset();
+                me->SetPower(POWER_MANA, me->GetMaxPower(POWER_MANA));
+                me->SetLastManaUse(0xFFFFFFFF); // hacky, but no other way atm to prevent mana regen
+                events.SetPhase(PHASE_ONE);
+                addWaveCounter = 0;
+                nextVengefulShadeTarget = 0;
+                DoCast(me, SPELL_SHADOW_CHANNELING);
+                me->RemoveAurasDueToSpell(SPELL_BERSERK);
+                me->RemoveAurasDueToSpell(SPELL_MANA_BARRIER);
+                me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_TAUNT, false);
+                me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_ATTACK_ME, false);
+            }
+>>>>>>> b28881f6485f4bc7052b552d46acdfa3bf3d713a
 
                 m_uiIntroTimer = 1000;
                 m_uiSummonWaveTimer = !bFirstSummon ? 10000 : 60000;
@@ -116,8 +131,35 @@ class boss_lady_deathwhisper : public CreatureScript
 
             void EnterCombat(Unit* /*pWho*/)
             {
+<<<<<<< HEAD
                 DoScriptText(SAY_AGGRO, me);
 
+=======
+                if (!instance->CheckRequiredBosses(DATA_LADY_DEATHWHISPER, who->ToPlayer()))
+                {
+                    EnterEvadeMode();
+                    instance->DoCastSpellOnPlayers(LIGHT_S_HAMMER_TELEPORT);
+                    return;
+                }
+
+                me->setActive(true);
+                DoZoneInCombat();
+
+                events.Reset();
+                events.SetPhase(PHASE_ONE);
+                // phase-independent events
+                events.ScheduleEvent(EVENT_BERSERK, 600000);
+                events.ScheduleEvent(EVENT_DEATH_AND_DECAY, 10000);
+                // phase one only
+                events.ScheduleEvent(EVENT_P1_SUMMON_WAVE, 5000, 0, PHASE_ONE);
+                events.ScheduleEvent(EVENT_P1_SHADOW_BOLT, urand(5500, 6000), 0, PHASE_ONE);
+                events.ScheduleEvent(EVENT_P1_EMPOWER_CULTIST, urand(20000, 30000), 0, PHASE_ONE);
+                if (getDifficulty() != RAID_DIFFICULTY_10MAN_NORMAL)
+                    events.ScheduleEvent(EVENT_DOMINATE_MIND_H, 27000);
+
+                Talk(SAY_AGGRO);
+                DoStartNoMovement(who);
+>>>>>>> b28881f6485f4bc7052b552d46acdfa3bf3d713a
                 me->RemoveAurasDueToSpell(SPELL_SHADOW_CHANNELING);
 
                 if (pInstance)
@@ -128,14 +170,51 @@ class boss_lady_deathwhisper : public CreatureScript
             {
                 DoScriptText(SAY_DEATH, me);
 
+<<<<<<< HEAD
                 if (pInstance)
                     pInstance->SetData(DATA_DEATHWHISPER_EVENT, DONE);
+=======
+                std::set<uint32> livingAddEntries;
+                // Full House achievement
+                for (SummonList::iterator itr = summons.begin(); itr != summons.end(); ++itr)
+                    if (Unit* unit = ObjectAccessor::GetUnit(*me, *itr))
+                        if (unit->isAlive() && unit->GetEntry() != NPC_VENGEFUL_SHADE)
+                            livingAddEntries.insert(unit->GetEntry());
+
+                if (livingAddEntries.size() >= 5)
+                {
+                    if (Player* player = killer->GetCharmerOrOwnerPlayerOrPlayerItself())
+                    {
+                        if (Group* group = player->GetGroup())
+                        {
+                            for (GroupReference *itr = group->GetFirstMember(); itr != NULL; itr = itr->next())
+                            {
+                                Player* member = itr->getSource();
+                                if (!member || !member->IsAtGroupRewardDistance(me))
+                                    continue;
+
+                                if (member->isAlive()|| !member->GetCorpse())
+                                    member->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET, SPELL_FULL_HOUSE, 0, me);
+                            }
+                        }
+                        else
+                            player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET, SPELL_FULL_HOUSE, 0, me);
+                    }
+                }
+
+                _JustDied();
+>>>>>>> b28881f6485f4bc7052b552d46acdfa3bf3d713a
             }
 
             void JustReachedHome()
             {
+<<<<<<< HEAD
                 if(pInstance)
                     pInstance->SetData(DATA_DEATHWHISPER_EVENT, FAIL);
+=======
+                _JustReachedHome();
+                instance->SetBossState(DATA_LADY_DEATHWHISPER, FAIL);
+>>>>>>> b28881f6485f4bc7052b552d46acdfa3bf3d713a
 
                 summons.DespawnAll();
             }

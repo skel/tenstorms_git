@@ -102,6 +102,7 @@ class boss_rotface : public CreatureScript
 
             void Reset()
             {
+<<<<<<< HEAD
                 uiFloodTimer = 35000;
                 uiSlimeSprayTimer = 15000;
                 uiBerserkTimer = 600000;
@@ -113,22 +114,59 @@ class boss_rotface : public CreatureScript
 
                 if(instance)
                     instance->SetData(DATA_ROTFACE_EVENT, NOT_STARTED);
+=======
+                _Reset();
+                events.ScheduleEvent(EVENT_SLIME_SPRAY, 20000);
+                events.ScheduleEvent(EVENT_HASTEN_INFECTIONS, 90000);
+                events.ScheduleEvent(EVENT_MUTATED_INFECTION, 14000);
+                infectionStage = 0;
+                infectionCooldown = 14000;
+>>>>>>> b28881f6485f4bc7052b552d46acdfa3bf3d713a
             }
 
             void JustDied(Unit* /*pKiller*/)
             {
+<<<<<<< HEAD
                 if(!instance)
+=======
+                if (!instance->CheckRequiredBosses(DATA_ROTFACE, who->ToPlayer()))
+                {
+                    EnterEvadeMode();
+                    instance->DoCastSpellOnPlayers(LIGHT_S_HAMMER_TELEPORT);
+>>>>>>> b28881f6485f4bc7052b552d46acdfa3bf3d713a
                     return;
 
+<<<<<<< HEAD
                 DoScriptText(SAY_DEATH, me);
 
                 instance->SetData(DATA_ROTFACE_EVENT, DONE);
                 instance->DoRemoveAurasDueToSpellOnPlayers(SPELL_INFECTION_AURA);
 
+=======
+                me->setActive(true);
+                Talk(SAY_AGGRO);
+                if (Creature* professor = Unit::GetCreature(*me, instance->GetData64(DATA_PROFESSOR_PUTRICIDE)))
+                    professor->AI()->DoAction(ACTION_ROTFACE_COMBAT);
+                DoZoneInCombat();
+            }
+
+            void JustDied(Unit* /*killer*/)
+            {
+                _JustDied();
+                Talk(SAY_DEATH);
+>>>>>>> b28881f6485f4bc7052b552d46acdfa3bf3d713a
                 if (Creature* professor = Unit::GetCreature(*me, instance->GetData64(DATA_PROFESSOR_PUTRICIDE)))
                     professor->AI()->DoAction(ACTION_ROTFACE_DEATH);
 
+<<<<<<< HEAD
                 summons.DespawnAll();
+=======
+            void JustReachedHome()
+            {
+                _JustReachedHome();
+                instance->SetBossState(DATA_ROTFACE, FAIL);
+                instance->SetData(DATA_OOZE_DANCE_ACHIEVEMENT, uint32(true));   // reset
+>>>>>>> b28881f6485f4bc7052b552d46acdfa3bf3d713a
             }
 
             void EnterCombat(Unit* /*who*/)
@@ -223,10 +261,50 @@ class boss_rotface : public CreatureScript
                     }
                 } else uiFloodEffectTimer -= diff;
 
+<<<<<<< HEAD
                 if (uiFloodTimer <= diff)
                 {
                     if(uiStage > 3)
                         uiStage = 0;
+=======
+                DoMeleeAttackIfReady();
+            }
+
+        private:
+            uint32 infectionCooldown;
+            uint8 infectionStage;
+        };
+
+        CreatureAI* GetAI(Creature* creature) const
+        {
+            return new boss_rotfaceAI(creature);
+        }
+};
+
+class npc_little_ooze : public CreatureScript
+{
+    public:
+        npc_little_ooze() : CreatureScript("npc_little_ooze") { }
+
+        struct npc_little_oozeAI : public ScriptedAI
+        {
+            npc_little_oozeAI(Creature* creature) : ScriptedAI(creature)
+            {
+            }
+
+            void IsSummonedBy(Unit* summoner)
+            {
+                DoCast(me, SPELL_LITTLE_OOZE_COMBINE, true);
+                DoCast(me, SPELL_WEAK_RADIATING_OOZE, true);
+                events.ScheduleEvent(EVENT_STICKY_OOZE, 5000);
+                me->AddThreat(summoner, 500000.0f);
+            }
+
+            void JustDied(Unit* /*killer*/)
+            {
+                me->DespawnOrUnsummon();
+            }
+>>>>>>> b28881f6485f4bc7052b552d46acdfa3bf3d713a
 
                     DoScriptText(SAY_OOZE_FLOOD, me);
 
@@ -283,12 +361,21 @@ class npc_ooze_big : public CreatureScript
             {
                 uiStickyOozeTimer = 9000;
 
+<<<<<<< HEAD
                 DoCast(SPELL_UNSTABLE_OOZE);
                 DoCast(SPELL_RADIATING_OOZE_1);
                 DoCast(SPELL_LARGE_OOZE);
                 me->AddUnitMovementFlag(MOVEMENTFLAG_WALKING);
                 me->SetSpeed(MOVE_WALK, 0.5f);
                 me->SetSpeed(MOVE_RUN, 0.5);
+=======
+            void JustDied(Unit* /*killer*/)
+            {
+                if (InstanceScript* instance = me->GetInstanceScript())
+                    if (Creature* rotface = Unit::GetCreature(*me, instance->GetData64(DATA_ROTFACE)))
+                        rotface->AI()->SummonedCreatureDespawn(me);
+                me->DespawnOrUnsummon();
+>>>>>>> b28881f6485f4bc7052b552d46acdfa3bf3d713a
             }
 
             void EnterCombat(Unit* /*who*/) { }

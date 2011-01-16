@@ -868,7 +868,7 @@ UPDATE `creature_template` SET `ScriptName`='boss_blood_queen_lana_thel' WHERE `
 UPDATE `creature_template` SET `ScriptName`='npc_royal_historian_archesonus' WHERE `entry`=8879;
 
 /* ISLE OF CONQUEST */
-UPDATE `creature_template` SET `ScriptName`='npc_four_car_garage' WHERE `entry` IN (34802,34793,34775,35069,34776);
+UPDATE `creature_template` SET `ScriptName`='npc_four_car_garage' WHERE `entry` IN (35273,34802,34793,34775,35069,34776);
 
 /* ISLE OF QUEL'DANAS */
 UPDATE `creature_template` SET `ScriptName`='npc_converted_sentry' WHERE `entry`=24981;
@@ -1847,7 +1847,10 @@ INSERT INTO `spell_script_names` (`spell_id`,`ScriptName`) VALUES
 ( 72089, 'spell_marrowgar_bone_spike_graveyard'),
 ( 69140, 'spell_marrowgar_coldflame'),
 ( 72705, 'spell_marrowgar_coldflame'),
-( 69147, 'spell_marrowgar_coldflame_trigger'),
+( 69146, 'spell_marrowgar_coldflame_damage'),
+( 70823, 'spell_marrowgar_coldflame_damage'),
+( 70824, 'spell_marrowgar_coldflame_damage'),
+( 70825, 'spell_marrowgar_coldflame_damage');
 ( 69075, 'spell_marrowgar_bone_storm'),
 ( 70834, 'spell_marrowgar_bone_storm'),
 ( 70835, 'spell_marrowgar_bone_storm'),

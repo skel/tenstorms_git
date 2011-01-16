@@ -201,6 +201,16 @@ class boss_blood_council_controller : public CreatureScript
 
             void EnterCombat(Unit* /*who*/)
             {
+<<<<<<< HEAD
+=======
+                if (!instance->CheckRequiredBosses(DATA_BLOOD_PRINCE_COUNCIL, who->ToPlayer()))
+                {
+                    EnterEvadeMode();
+                    instance->DoCastSpellOnPlayers(LIGHT_S_HAMMER_TELEPORT);
+                    return;
+                }
+
+>>>>>>> b28881f6485f4bc7052b552d46acdfa3bf3d713a
                 instance->SetBossState(DATA_BLOOD_PRINCE_COUNCIL, IN_PROGRESS);
 
                 DoCast(me, SPELL_INVOCATION_OF_BLOOD_VALANAR);
@@ -217,7 +227,7 @@ class boss_blood_council_controller : public CreatureScript
                     if (!valanar->isInCombat())
                         DoZoneInCombat(valanar);
 
-                events.ScheduleEvent(EVENT_INVOCATION_OF_BLOOD, 30000);
+                events.ScheduleEvent(EVENT_INVOCATION_OF_BLOOD, 46500);
 
                 invocationOrder[0] = InvocationData(instance->GetData64(DATA_PRINCE_VALANAR_GUID), SPELL_INVOCATION_OF_BLOOD_VALANAR, EMOTE_VALANAR_INVOCATION, 71070);
                 if (urand(0, 1))
@@ -306,7 +316,7 @@ class boss_blood_council_controller : public CreatureScript
                             }
 
                             DoCast(me, invocationOrder[invocationStage].spellId);
-                            events.ScheduleEvent(EVENT_INVOCATION_OF_BLOOD, 30000);
+                            events.ScheduleEvent(EVENT_INVOCATION_OF_BLOOD, 46500);
                             break;
                         }
                         default:
@@ -1052,7 +1062,7 @@ class npc_ball_of_flame : public CreatureScript
 
         struct npc_ball_of_flameAI : public ScriptedAI
         {
-            npc_ball_of_flameAI(Creature* creature) : ScriptedAI(creature)
+            npc_ball_of_flameAI(Creature* creature) : ScriptedAI(creature), instance(creature->GetInstanceScript())
             {
                 despawnTimer = 0;
             }
@@ -1095,6 +1105,15 @@ class npc_ball_of_flame : public CreatureScript
                     }
             }
 
+            void DamageDealt(Unit* /*target*/, uint32& damage, DamageEffectType damageType)
+            {
+                if (!instance || damageType != SPELL_DIRECT_DAMAGE)
+                    return;
+
+                if (damage > RAID_MODE<uint32>(23000, 25000, 23000, 25000))
+                    instance->SetData(DATA_ORB_WHISPERER_ACHIEVEMENT, uint32(false));
+            }
+
             void UpdateAI(const uint32 diff)
             {
                 if (!despawnTimer)
@@ -1110,6 +1129,7 @@ class npc_ball_of_flame : public CreatureScript
             }
 
         private:
+            InstanceScript* instance;
             uint64 chaseGUID;
             uint32 despawnTimer;
         };

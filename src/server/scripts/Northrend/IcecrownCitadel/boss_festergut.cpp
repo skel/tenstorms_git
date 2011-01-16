@@ -68,6 +68,7 @@ class boss_festergut : public CreatureScript
 
             void Reset()
             {
+<<<<<<< HEAD
                 uiInhaleBlightTimer = urand(23000,29000);
                 uiVileGasTimer = 20000;
                 uiGasSporesTimer = 20000;
@@ -78,21 +79,36 @@ class boss_festergut : public CreatureScript
                 uiInhaleBlightCount = 0;
 
                 if (Creature* gasDummy = GetClosestCreatureWithEntry(me, CREATURE_ORANGE_GAS_STALKER, 100.0f, true))
+=======
+                _Reset();
+                events.ScheduleEvent(EVENT_BERSERK, 300000);
+                events.ScheduleEvent(EVENT_INHALE_BLIGHT, urand(25000, 30000));
+                events.ScheduleEvent(EVENT_GAS_SPORE, urand(20000, 25000));
+                events.ScheduleEvent(EVENT_GASTRIC_BLOAT, urand(12500, 15000));
+                maxInoculatedStack = 0;
+                inhaleCounter = 0;
+                me->RemoveAurasDueToSpell(SPELL_BERSERK2);
+                if (Creature* gasDummy = me->FindNearestCreature(NPC_GAS_DUMMY, 100.0f, true))
+>>>>>>> b28881f6485f4bc7052b552d46acdfa3bf3d713a
                 {
                     uiGasDummyGUID = gasDummy->GetGUID();
                     for (uint8 i = 0; i < 3; ++i)
                     {
-                        gasDummy->RemoveAurasDueToSpell(gaseousBlight[i]);
+                        me->RemoveAurasDueToSpell(gaseousBlight[i]);
                         gasDummy->RemoveAurasDueToSpell(gaseousBlightVisual[i]);
                     }
                 }
+<<<<<<< HEAD
 
                 if (instance)
                     instance->SetData(DATA_FESTERGURT_EVENT, NOT_STARTED);
+=======
+>>>>>>> b28881f6485f4bc7052b552d46acdfa3bf3d713a
             }
 
             void EnterCombat(Unit* /*who*/)
             {
+<<<<<<< HEAD
                 DoScriptText(SAY_AGGRO, me);
 
                 if (Creature* professor = Unit::GetCreature(*me, instance->GetData64(DATA_PROFESSOR_PUTRICIDE)))
@@ -107,10 +123,27 @@ class boss_festergut : public CreatureScript
                     for (uint8 i = 0; i < 3; ++i)
                         gasDummy->CastSpell(gasDummy,gaseousBlight[i], true);
                 }
+=======
+                if (!instance->CheckRequiredBosses(DATA_FESTERGUT, who->ToPlayer()))
+                {
+                    EnterEvadeMode();
+                    instance->DoCastSpellOnPlayers(LIGHT_S_HAMMER_TELEPORT);
+                    return;
+                }
+
+                me->setActive(true);
+                Talk(SAY_AGGRO);
+                if (Creature* gasDummy = me->FindNearestCreature(NPC_GAS_DUMMY, 100.0f, true))
+                    gasDummyGUID = gasDummy->GetGUID();
+                if (Creature* professor = ObjectAccessor::GetCreature(*me, instance->GetData64(DATA_PROFESSOR_PUTRICIDE)))
+                    professor->AI()->DoAction(ACTION_FESTERGUT_COMBAT);
+                DoZoneInCombat();
+>>>>>>> b28881f6485f4bc7052b552d46acdfa3bf3d713a
             }
 
             void JustDied(Unit* /*pKiller*/)
             {
+<<<<<<< HEAD
                 if (!instance)
                     return;
 
@@ -122,6 +155,11 @@ class boss_festergut : public CreatureScript
                 me->RemoveAurasDueToSpell(SPELL_PUNGENT_BLIGHT);
 
                 if (Creature* professor = Unit::GetCreature(*me, instance->GetData64(DATA_PROFESSOR_PUTRICIDE)))
+=======
+                _JustDied();
+                Talk(SAY_DEATH);
+                if (Creature* professor = ObjectAccessor::GetCreature(*me, instance->GetData64(DATA_PROFESSOR_PUTRICIDE)))
+>>>>>>> b28881f6485f4bc7052b552d46acdfa3bf3d713a
                     professor->AI()->DoAction(ACTION_FESTERGUT_DEATH);
 
                 if (Creature* gasDummy = Unit::GetCreature(*me, uiGasDummyGUID))
@@ -130,8 +168,14 @@ class boss_festergut : public CreatureScript
 
             void JustReachedHome()
             {
+<<<<<<< HEAD
                 if (!instance)
                     return;
+=======
+                _JustReachedHome();
+                instance->SetBossState(DATA_FESTERGUT, FAIL);
+            }
+>>>>>>> b28881f6485f4bc7052b552d46acdfa3bf3d713a
 
                 instance->SetData(DATA_FESTERGURT_EVENT, FAIL);
                 instance->DoRemoveAurasDueToSpellOnPlayers(SPELL_GASTRIC_BLOAT);
@@ -212,7 +256,18 @@ class boss_festergut : public CreatureScript
                     uiBerserkTimer = 300000;
                 } else uiBerserkTimer -= uiDiff;
 
+<<<<<<< HEAD
                 DoMeleeAttackIfReady();
+=======
+            void _RemoveBlight()
+            {
+                if (Creature* gasDummy = ObjectAccessor::GetCreature(*me, gasDummyGUID))
+                    for (uint8 i = 0; i < 3; ++i)
+                    {
+                        me->RemoveAurasDueToSpell(gaseousBlight[i]);
+                        gasDummy->RemoveAurasDueToSpell(gaseousBlightVisual[i]);
+                    }
+>>>>>>> b28881f6485f4bc7052b552d46acdfa3bf3d713a
             }
         private:
             InstanceScript* instance;

@@ -1888,7 +1888,7 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
     if (duel && GetMapId() != mapid && GetMap()->GetGameObject(GetUInt64Value(PLAYER_DUEL_ARBITER)))
         DuelComplete(DUEL_FLED);
 
-    if (GetMapId() == mapid && !m_transport || (GetTransport() && GetMapId() == 628))
+    if ((GetMapId() == mapid && !m_transport) || (GetTransport() && GetMapId() == 628))
     {
         //lets reset far teleport flag if it wasn't reset during chained teleports
         SetSemaphoreTeleportFar(false);
@@ -7697,7 +7697,6 @@ void Player::_ApplyItemBonuses(ItemPrototype const *proto, uint8 slot, bool appl
         HandleStatModifier(UNIT_MOD_RESISTANCE_ARCANE, BASE_VALUE, float(proto->ArcaneRes), apply);
 
     WeaponAttackType attType = BASE_ATTACK;
-    float damage = 0.0f;
 
     if (slot == EQUIPMENT_SLOT_RANGED && (
         proto->InventoryType == INVTYPE_RANGED || proto->InventoryType == INVTYPE_THROWN ||
@@ -8530,6 +8529,8 @@ void Player::SendLoot(uint64 guid, LootType loot_type)
             return;
         }
 
+        permission = OWNER_PERMISSION;
+
         loot = &item->loot;
 
         if (!item->m_lootGenerated)
@@ -8582,6 +8583,8 @@ void Player::SendLoot(uint64 guid, LootType loot_type)
 
         if (bones->lootRecipient != this)
             permission = NONE_PERMISSION;
+        else
+            permission = OWNER_PERMISSION;
     }
     else
     {
@@ -8616,6 +8619,7 @@ void Player::SendLoot(uint64 guid, LootType loot_type)
                 const uint32 a = urand(0, creature->getLevel()/2);
                 const uint32 b = urand(0, getLevel()/2);
                 loot->gold = uint32(10 * (a + b) * sWorld->getRate(RATE_DROP_MONEY));
+                permission = OWNER_PERMISSION;
             }
         }
         else
@@ -8656,6 +8660,7 @@ void Player::SendLoot(uint64 guid, LootType loot_type)
             {
                 loot->clear();
                 loot->FillLoot(creature->GetCreatureInfo()->SkinLootId, LootTemplates_Skinning, this, true);
+                permission = OWNER_PERMISSION;
             }
             // set group rights only for loot_type != LOOT_SKINNING
             else
@@ -8684,7 +8689,7 @@ void Player::SendLoot(uint64 guid, LootType loot_type)
                         permission = NONE_PERMISSION;
                 }
                 else if (recipient == this)
-                    permission = ALL_PERMISSION;
+                    permission = OWNER_PERMISSION;
                 else
                     permission = NONE_PERMISSION;
             }
@@ -9322,25 +9327,25 @@ void Player::SendInitWorldStates(uint32 zoneid, uint32 areaid)
                 bg->FillInitialWorldStates(data);
             else
             {
-                data << uint32(4221) << uint32(1); // 7
-                data << uint32(4222) << uint32(1); // 8
-                data << uint32(4226) << uint32(300); // 9
-                data << uint32(4227) << uint32(300); // 10
-                data << uint32(4322) << uint32(1); // 11
-                data << uint32(4321) << uint32(1); // 12
-                data << uint32(4320) << uint32(1); // 13
-                data << uint32(4323) << uint32(1); // 14
-                data << uint32(4324) << uint32(1); // 15
-                data << uint32(4325) << uint32(1); // 16 
-                data << uint32(4317) << uint32(1); // 17
+                data << uint32(4221) << uint32(1); // 7 BG_IC_ALLIANCE_RENFORT_SET
+                data << uint32(4222) << uint32(1); // 8 BG_IC_HORDE_RENFORT_SET
+                data << uint32(4226) << uint32(300); // 9 BG_IC_ALLIANCE_RENFORT
+                data << uint32(4227) << uint32(300); // 10 BG_IC_HORDE_RENFORT
+                data << uint32(4322) << uint32(1); // 11 BG_IC_GATE_FRONT_H_WS_OPEN
+                data << uint32(4321) << uint32(1); // 12 BG_IC_GATE_WEST_H_WS_OPEN
+                data << uint32(4320) << uint32(1); // 13 BG_IC_GATE_EAST_H_WS_OPEN
+                data << uint32(4323) << uint32(1); // 14 BG_IC_GATE_FRONT_A_WS_OPEN
+                data << uint32(4324) << uint32(1); // 15 BG_IC_GATE_WEST_A_WS_OPEN
+                data << uint32(4325) << uint32(1); // 16 BG_IC_GATE_EAST_A_WS_OPEN
+                data << uint32(4317) << uint32(1); // 17 unknown
                 
-                data << uint32(4301) << uint32(1); // 18
-                data << uint32(4296) << uint32(1); // 19
-                data << uint32(4306) << uint32(1); // 20
-                data << uint32(4311) << uint32(1); // 21
-                data << uint32(4294) << uint32(1); // 22
-                data << uint32(4243) << uint32(1); // 23
-                data << uint32(4345) << uint32(1); // 24
+                data << uint32(4301) << uint32(1); // 18 BG_IC_DOCKS_UNCONTROLLED
+                data << uint32(4296) << uint32(1); // 19 BG_IC_HANGAR_UNCONTROLLED
+                data << uint32(4306) << uint32(1); // 20 BG_IC_QUARRY_UNCONTROLLED
+                data << uint32(4311) << uint32(1); // 21 BG_IC_REFINERY_UNCONTROLLED
+                data << uint32(4294) << uint32(1); // 22 BG_IC_WORKSHOP_UNCONTROLLED
+                data << uint32(4243) << uint32(1); // 23 unknown
+                data << uint32(4345) << uint32(1); // 24 unknown
             }
             break;
         default:
@@ -14147,7 +14152,7 @@ void Player::PrepareQuestMenu(uint64 guid)
     {
         uint32 quest_id = i->second;
         QuestStatus status = GetQuestStatus(quest_id);
-        if (status == QUEST_STATUS_COMPLETE && !GetQuestRewardStatus(quest_id))
+        if (status == QUEST_STATUS_COMPLETE)
             qm.AddMenuItem(quest_id, 4);
         else if (status == QUEST_STATUS_INCOMPLETE)
             qm.AddMenuItem(quest_id, 4);
@@ -15297,7 +15302,7 @@ QuestStatus Player::GetQuestStatus(uint32 quest_id) const
 
         if (Quest const* qInfo = sObjectMgr->GetQuestTemplate(quest_id))
             if (!qInfo->IsRepeatable() && m_RewardedQuests.find(quest_id) != m_RewardedQuests.end())
-                return QUEST_STATUS_COMPLETE;
+                return QUEST_STATUS_REWARDED;
     }
     return QUEST_STATUS_NONE;
 }
@@ -22549,9 +22554,9 @@ bool ItemPosCount::isContainedIn(ItemPosCountVec const& vec) const
     return false;
 }
 
-//***********************************
-//-------------TRINITY---------------
-//***********************************
+// ***********************************
+// -------------TRINITY---------------
+// ***********************************
 
 void Player::StopCastingBindSight()
 {
@@ -24127,7 +24132,10 @@ void Player::ActivateSpec(uint8 spec)
     _SaveActions(trans);
     CharacterDatabase.CommitTransaction(trans);
 
-    UnsummonPetTemporaryIfAny();
+    // TO-DO: We need more research to know what happens with warlock's reagent
+    if (Pet* pet = GetPet())
+        RemovePet(pet, PET_SAVE_NOT_IN_SLOT);
+
     ClearComboPointHolders();
     ClearAllReactives();
     UnsummonAllTotems();
@@ -24241,10 +24249,6 @@ void Player::ActivateSpec(uint8 spec)
         if (PreparedQueryResult result = CharacterDatabase.Query(stmt))
             _LoadActions(result);
     }
-
-    ResummonPetTemporaryUnSummonedIfAny();
-    if (Pet* pPet = GetPet())
-        pPet->InitTalentForLevel();  // not processed with aura removal because pet was not active
 
     SendActionButtons(1);
 
