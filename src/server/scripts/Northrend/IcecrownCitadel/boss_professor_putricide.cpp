@@ -155,53 +155,20 @@ class boss_professor_putricide : public CreatureScript
                 if(!pInstance)
                     return;
 
-<<<<<<< HEAD
                 pInstance->SetData(DATA_PROFESSOR_PUTRICIDE_EVENT, IN_PROGRESS);
                 SetSonPhase(PHASE_COMBAT);
                 DoScriptText(SAY_AGGRO, me);
                 DoZoneInCombat(me);
-=======
-                if (!instance->CheckRequiredBosses(DATA_PROFESSOR_PUTRICIDE, who->ToPlayer()))
-                {
-                    EnterEvadeMode();
-                    instance->DoCastSpellOnPlayers(LIGHT_S_HAMMER_TELEPORT);
-                    return;
-                }
-
-                me->setActive(true);
-                events.Reset();
-                events.ScheduleEvent(EVENT_BERSERK, 600000);
-                events.ScheduleEvent(EVENT_SLIME_PUDDLE, 10000);
-                events.ScheduleEvent(EVENT_UNSTABLE_EXPERIMENT, urand(25000, 30000));
-                if (IsHeroic())
-                    events.ScheduleEvent(EVENT_UNBOUND_PLAGUE, 20000);
-
-                _SetPhase(PHASE_COMBAT_1);
-                Talk(SAY_AGGRO);
-                DoCast(me, SPELL_OOZE_TANK_PROTECTION, true);
-                DoZoneInCombat(me);
-
-                instance->SetBossState(DATA_PROFESSOR_PUTRICIDE, IN_PROGRESS);
-                if (GameObject* table = ObjectAccessor::GetGameObject(*me, instance->GetData64(DATA_PUTRICIDE_TABLE)))
-                    table->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_IN_USE);
->>>>>>> b28881f6485f4bc7052b552d46acdfa3bf3d713a
             }
 
             void JustDied(Unit* /*pKiller*/)
             {
-<<<<<<< HEAD
                 DoScriptText(SAY_DEATH, me);
 
                 if (pInstance)
                     pInstance->SetData(DATA_PROFESSOR_PUTRICIDE_EVENT, DONE);
 
                 summons.DespawnAll();
-=======
-                _JustReachedHome();
-                me->RemoveUnitMovementFlag(MOVEMENTFLAG_WALKING);
-                if (events.GetPhaseMask() & PHASE_MASK_COMBAT)
-                    instance->SetBossState(DATA_PROFESSOR_PUTRICIDE, FAIL);
->>>>>>> b28881f6485f4bc7052b552d46acdfa3bf3d713a
             }
 
             void KilledUnit(Unit* victim)
@@ -218,15 +185,10 @@ class boss_professor_putricide : public CreatureScript
 
             void JustReachedHome()
             {
-<<<<<<< HEAD
                 if(pInstance)
                     pInstance->SetData(DATA_PROFESSOR_PUTRICIDE_EVENT, FAIL);
 
                 summons.DespawnAll();
-=======
-                _JustDied();
-                Talk(SAY_DEATH);
->>>>>>> b28881f6485f4bc7052b552d46acdfa3bf3d713a
             }
 
             void JustSummoned(Creature* summon)
@@ -254,11 +216,6 @@ class boss_professor_putricide : public CreatureScript
                             summon->CastCustomSpell(SPELL_VOLATILE_OOZE, SPELLVALUE_MAX_TARGETS, 1, target, false);
                             summon->ClearUnitState(UNIT_STAT_CASTING);
                             summon->GetMotionMaster()->MoveIdle();
-<<<<<<< HEAD
-=======
-                            summon->m_Events.AddEvent(new StartMovementEvent(*summon), summon->m_Events.CalculateTime(3500));
-                            me->SetReactState(REACT_PASSIVE);
->>>>>>> b28881f6485f4bc7052b552d46acdfa3bf3d713a
                         }
                         return;
                     default:
@@ -410,31 +367,12 @@ class boss_professor_putricide : public CreatureScript
             {
                 if(phase == PHASE_FESTERGUT)
                 {
-<<<<<<< HEAD
                     if (m_uiMalleableGooTimer < uiDiff)
                     {
                         if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM, 1))
                             DoCast(pTarget, SPELL_MALLABLE_GOO_H);
                         m_uiMalleableGooTimer = urand(16000, 20000);
                     } else m_uiMalleableGooTimer -= uiDiff;
-=======
-                    newTargetSelectTimer = 5000;
-                    DoStartNoMovement(me);
-                }
-            }
-
-            void UpdateAI(const uint32 diff)
-            {
-                // simplified update, we do not want to select new target
-                if (!me->isInCombat())
-                    return;
-
-                if (!me->getVictim())
-                    return;
-
-                if (!newTargetSelectTimer)
-                    return;
->>>>>>> b28881f6485f4bc7052b552d46acdfa3bf3d713a
 
                     if (m_uiSayDieTimer < uiDiff)
                     {

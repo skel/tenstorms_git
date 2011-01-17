@@ -115,7 +115,6 @@ class boss_saurfang : public CreatureScript
 
             void Reset()
             {
-<<<<<<< HEAD
                 uiBoilingBloodTimer = 25000;
                 uiBloodNovaTimer = 30000;
                 uiRuneOfBloodTimer = 20000;
@@ -128,43 +127,12 @@ class boss_saurfang : public CreatureScript
 
                 if (instance)
                     instance->SetData(DATA_SAURFANG_EVENT, NOT_STARTED);
-=======
-                _Reset();
-                me->SetReactState(REACT_DEFENSIVE);
-                events.SetPhase(PHASE_COMBAT);
-                frenzy = false;
-                me->SetPower(POWER_ENERGY, 0);
-                DoCast(me, SPELL_ZERO_POWER, true);
-                DoCast(me, SPELL_BLOOD_LINK, true);
-                DoCast(me, SPELL_BLOOD_POWER, true);
-                DoCast(me, SPELL_MARK_OF_THE_FALLEN_CHAMPION_S, true);
-                DoCast(me, SPELL_RUNE_OF_BLOOD_S, true);
-                me->RemoveAurasDueToSpell(SPELL_BERSERK);
-                me->RemoveAurasDueToSpell(SPELL_FRENZY);
->>>>>>> b28881f6485f4bc7052b552d46acdfa3bf3d713a
             }
 
             void EnterCombat(Unit* /*who*/)
             {
-<<<<<<< HEAD
                 if(!instance)
                     return;
-=======
-                if (!instance->CheckRequiredBosses(DATA_DEATHBRINGER_SAURFANG, who->ToPlayer()))
-                {
-                    EnterEvadeMode();
-                    instance->DoCastSpellOnPlayers(LIGHT_S_HAMMER_TELEPORT);
-                    return;
-                }
-
-                // oh just screw intro, enter combat - no exploits please
-                me->setActive(true);
-                DoZoneInCombat();
-
-                events.SetPhase(PHASE_COMBAT);
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
-                introDone = true;
->>>>>>> b28881f6485f4bc7052b552d46acdfa3bf3d713a
 
                 DoScriptText(SAY_AGGRO, me);
 
@@ -178,21 +146,10 @@ class boss_saurfang : public CreatureScript
 
             void JustDied(Unit* /*killer*/)
             {
-<<<<<<< HEAD
                 if (!instance)
                     return;
 
                 DoScriptText(SAY_DEATH, me);
-=======
-                _JustDied();
-                DoCastAOE(SPELL_ACHIEVEMENT, true);
-                Talk(SAY_DEATH);
-
-                instance->DoRemoveAurasDueToSpellOnPlayers(SPELL_MARK_OF_THE_FALLEN_CHAMPION);
-                if (Creature* creature = ObjectAccessor::GetCreature(*me, instance->GetData64(DATA_SAURFANG_EVENT_NPC)))
-                    creature->AI()->DoAction(ACTION_START_OUTRO);
-            }
->>>>>>> b28881f6485f4bc7052b552d46acdfa3bf3d713a
 
                 instance->SetData(DATA_SAURFANG_EVENT, DONE);
                 instance->DoRemoveAurasDueToSpellOnPlayers(SPELL_FALLEN_CHAMPION);
@@ -207,7 +164,6 @@ class boss_saurfang : public CreatureScript
 
             void JustReachedHome()
             {
-<<<<<<< HEAD
                 if (!instance)
                     return;
 
@@ -217,11 +173,6 @@ class boss_saurfang : public CreatureScript
                 me->RemoveAurasDueToSpell(SPELL_BLOOD_POWER);
                 me->RemoveAurasDueToSpell(SPELL_FALLEN_CHAMPION_AURA);
                 me->RemoveAurasDueToSpell(SPELL_RUNE_OF_BLOOD_AURA);
-=======
-                _JustReachedHome();
-                instance->SetBossState(DATA_DEATHBRINGER_SAURFANG, FAIL);
-                instance->DoRemoveAurasDueToSpellOnPlayers(SPELL_MARK_OF_THE_FALLEN_CHAMPION);
->>>>>>> b28881f6485f4bc7052b552d46acdfa3bf3d713a
             }
 
             void KilledUnit(Unit* victim)

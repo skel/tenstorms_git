@@ -559,7 +559,6 @@ class instance_icecrown_citadel : public InstanceMapScript
                         }
                         uiEncounter[4] = data;
                         break;
-<<<<<<< HEAD
                     case DATA_ROTFACE_EVENT:
                         if(data == DONE)
                         {
@@ -609,120 +608,6 @@ class instance_icecrown_citadel : public InstanceMapScript
                         }
                         if(data == NOT_STARTED)
                             HandleGameObject(uiCrimsonHallDoor1, true);
-=======
-                    case DATA_VALITHRIA_DREAMWALKER:
-                    case DATA_SINDRAGOSA:
-                    case DATA_THE_LICH_KING:
-                        break;
-                    default:
-                        break;
-                 }
-
-                 return true;
-            }
-
-            void SetData(uint32 type, uint32 data)
-            {
-                switch (type)
-                {
-                    case DATA_BONED_ACHIEVEMENT:
-                        isBonedEligible = data ? true : false;
-                        break;
-                    case DATA_OOZE_DANCE_ACHIEVEMENT:
-                        isOozeDanceEligible = data ? true : false;
-                        break;
-                    case DATA_NAUSEA_ACHIEVEMENT:
-                        isNauseaEligible = data ? true : false;
-                        break;
-                    case DATA_ORB_WHISPERER_ACHIEVEMENT:
-                        isOrbWhispererEligible = data ? true : false;
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            bool CheckAchievementCriteriaMeet(uint32 criteria_id, Player const* /*source*/, Unit const* /*target*/, uint32 /*miscvalue1*/)
-            {
-                switch (criteria_id)
-                {
-                    case CRITERIA_BONED_10N:
-                    case CRITERIA_BONED_25N:
-                    case CRITERIA_BONED_10H:
-                    case CRITERIA_BONED_25H:
-                        return isBonedEligible;
-                    case CRITERIA_DANCES_WITH_OOZES_10N:
-                    case CRITERIA_DANCES_WITH_OOZES_25N:
-                    case CRITERIA_DANCES_WITH_OOZES_10H:
-                    case CRITERIA_DANCES_WITH_OOZES_25H:
-                        return isOozeDanceEligible;
-                    case CRITERIA_NAUSEA_10N:
-                    case CRITERIA_NAUSEA_25N:
-                    case CRITERIA_NAUSEA_10H:
-                    case CRITERIA_NAUSEA_25H:
-                        return isNauseaEligible;
-                    case CRITERIA_ORB_WHISPERER_10N:
-                    case CRITERIA_ORB_WHISPERER_25N:
-                    case CRITERIA_ORB_WHISPERER_10H:
-                    case CRITERIA_ORB_WHISPERER_25H:
-                        return isOrbWhispererEligible;
-                    // Only one criteria for both modes, need to do it like this
-                    case CRITERIA_KILL_LANA_THEL_10M:
-                    case CRITERIA_ONCE_BITTEN_TWICE_SHY_10N:
-                    case CRITERIA_ONCE_BITTEN_TWICE_SHY_10V:
-                        return CAST_INST(InstanceMap, instance)->GetMaxPlayers() == 10;
-                    case CRITERIA_KILL_LANA_THEL_25M:
-                    case CRITERIA_ONCE_BITTEN_TWICE_SHY_25N:
-                    case CRITERIA_ONCE_BITTEN_TWICE_SHY_25V:
-                        return CAST_INST(InstanceMap, instance)->GetMaxPlayers() == 25;
-                    default:
-                        break;
-                }
-
-                return false;
-            }
-
-            bool CheckRequiredBosses(uint32 bossId, Player const* player = NULL) const
-            {
-                if (player && player->isGameMaster())
-                    return true;
-
-                switch (bossId)
-                {
-                    case DATA_THE_LICH_KING:
-                        if (!CheckPlagueworks(bossId))
-                            return false;
-                        if (!CheckCrimsonHalls(bossId))
-                            return false;
-                        if (!CheckFrostwingHalls(bossId))
-                            return false;
-                        break;
-                    case DATA_SINDRAGOSA:
-                    case DATA_VALITHRIA_DREAMWALKER:
-                        if (!CheckFrostwingHalls(bossId))
-                            return false;
-                        break;
-                    case DATA_BLOOD_QUEEN_LANA_THEL:
-                    case DATA_BLOOD_PRINCE_COUNCIL:
-                        if (!CheckCrimsonHalls(bossId))
-                            return false;
-                        break;
-                    case DATA_FESTERGUT:
-                    case DATA_ROTFACE:
-                    case DATA_PROFESSOR_PUTRICIDE:
-                        if (!CheckPlagueworks(bossId))
-                            return false;
-                        break;
-                    default:
-                        break;
-                }
-
-                if (!CheckLowerSpire(bossId))
-                    return false;
-
-                return true;
-            }
->>>>>>> b28881f6485f4bc7052b552d46acdfa3bf3d713a
 
                         if(data == IN_PROGRESS)
                             HandleGameObject(uiCrimsonHallDoor1, false);
