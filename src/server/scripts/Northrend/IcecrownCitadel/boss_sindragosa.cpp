@@ -673,7 +673,7 @@ class spell_sindragosa_ice_tomb_effect : public SpellScriptLoader
 class spell_sindragosa_blistering_cold : public SpellScriptLoader
 {
     public:
-        spell_sindragosa_blistering_cold() : SpellScriptLoader("spell_sindragosa_ice_tomb_effect") { }
+        spell_sindragosa_blistering_cold() : SpellScriptLoader("spell_sindragosa_blistering_cold") { }
 
 
         class spell_sindragosa_blistering_cold_SpellScript : public SpellScript
@@ -710,6 +710,6 @@ void AddSC_boss_sindragosa()
     new spell_sindragosa_ice_tomb();
     new spell_sindragosa_mystic_buffet(); //for achievement
     new spell_sindragosa_unchained_magic();
-    //new spell_sindragosa_ice_tomb_effect();
+    new spell_sindragosa_ice_tomb_effect();
     new spell_sindragosa_blistering_cold();
 }
